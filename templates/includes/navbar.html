@@ -1,7 +1,7 @@
 {% load static %}
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container">
-        <a class="navbar-brand" href="{% url 'blog:home' %}">
+        <a class="navbar-brand" href="{% url 'home' %}">
             {% if site_settings.site_logo %}
                 <img src="{{ site_settings.site_logo }}" alt="{{ site_settings.site_name }}" height="40">
             {% else %}
@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'blog:home' %}">
+                    <a class="nav-link" href="{% url 'home' %}">
                         <i class="fas fa-home me-1"></i>首页
                     </a>
                 </li>
@@ -30,7 +30,7 @@
                     <ul class="dropdown-menu">
                         {% for category in nav_categories %}
                         <li>
-                            <a class="dropdown-item" href="{% url 'blog:category_detail' category.slug %}">
+                            <a class="dropdown-item" href="{% url 'category_detail' category.slug %}">
                                 {{ category.name }}
                             </a>
                         </li>
@@ -40,14 +40,14 @@
                 {% endif %}
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'blog:archive' %}">
+                    <a class="nav-link" href="{% url 'archive' %}">
                         <i class="fas fa-archive me-1"></i>归档
                     </a>
                 </li>
             </ul>
             
             <!-- Search Form -->
-            <form class="d-flex me-3" method="get" action="{% url 'blog:search' %}">
+            <form class="d-flex me-3" method="get" action="{% url 'search' %}">
                 <input class="form-control me-2" type="search" name="q" placeholder="搜索文章..." 
                        value="{{ request.GET.q }}" style="width: 200px;">
                 <button class="btn btn-outline-light" type="submit">
@@ -64,20 +64,20 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                <a class="dropdown-item" href="{% url 'profile' %}">
                                     <i class="fas fa-user me-1"></i>个人资料
                                 </a>
                             </li>
                             {% if user.is_staff %}
                             <li>
-                                <a class="dropdown-item" href="{% url 'dashboard:home' %}">
+                                <a class="dropdown-item" href="{% url 'dashboard_home' %}">
                                     <i class="fas fa-tachometer-alt me-1"></i>管理面板
                                 </a>
                             </li>
                             {% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                <a class="dropdown-item" href="{% url 'logout' %}">
                                     <i class="fas fa-sign-out-alt me-1"></i>退出登录
                                 </a>
                             </li>
@@ -85,12 +85,12 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:login' %}">
+                        <a class="nav-link" href="{% url 'login' %}">
                             <i class="fas fa-sign-in-alt me-1"></i>登录
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:register' %}">
+                        <a class="nav-link" href="{% url 'register' %}">
                             <i class="fas fa-user-plus me-1"></i>注册
                         </a>
                     </li>

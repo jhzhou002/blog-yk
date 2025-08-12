@@ -31,10 +31,7 @@ INSTALLED_APPS = [
     'crispy_bootstrap5',
     
     # Local apps
-    'blog',
-    'accounts',
-    'common',
-    'dashboard',
+    'blog_app',
 ]
 
 MIDDLEWARE = [
@@ -60,8 +57,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'common.context_processors.site_settings',
-                'common.context_processors.navigation_context',
+                'blog_app.context_processors.site_settings',
+                'blog_app.context_processors.navigation_context',
             ],
         },
     },

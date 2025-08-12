@@ -2,9 +2,18 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
-app_name = 'accounts'
-
 urlpatterns = [
+    # 博客首页和文章
+    path('', views.home, name='home'),
+    path('post/<slug:slug>/', views.post_detail, name='post_detail'),
+    path('category/<slug:slug>/', views.category_detail, name='category_detail'),
+    path('tag/<slug:slug>/', views.tag_detail, name='tag_detail'),
+    path('search/', views.search, name='search'),
+    path('archive/', views.archive, name='archive'),
+    path('archive/<int:year>/<int:month>/', views.archive_month, name='archive_month'),
+    path('post/<slug:post_slug>/comment/', views.add_comment, name='add_comment'),
+    
+    # 用户认证
     path('login/', views.CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('register/', views.register, name='register'),
@@ -46,4 +55,11 @@ urlpatterns = [
              template_name='accounts/password_change_done.html'
          ), 
          name='password_change_done'),
+    
+    # 管理面板
+    path('dashboard/', views.dashboard_home, name='dashboard_home'),
+    path('dashboard/posts/', views.post_list, name='post_list'),
+    path('dashboard/comments/', views.comment_list, name='comment_list'),
+    path('dashboard/comments/<int:pk>/approve/', views.comment_approve, name='comment_approve'),
+    path('dashboard/comments/<int:pk>/delete/', views.comment_delete, name='comment_delete'),
 ]

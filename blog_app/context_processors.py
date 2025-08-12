@@ -1,5 +1,4 @@
-from .models import SiteSettings
-from blog.models import Category, Tag
+from .models import SiteSettings, Category, Tag
 
 
 def site_settings(request):

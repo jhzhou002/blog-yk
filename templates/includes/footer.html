@@ -12,12 +12,12 @@
             <div class="col-lg-3">
                 <h6>快速链接</h6>
                 <ul class="list-unstyled">
-                    <li><a href="{% url 'blog:home' %}" class="text-light text-decoration-none">首页</a></li>
-                    <li><a href="{% url 'blog:archive' %}" class="text-light text-decoration-none">文章归档</a></li>
+                    <li><a href="{% url 'home' %}" class="text-light text-decoration-none">首页</a></li>
+                    <li><a href="{% url 'archive' %}" class="text-light text-decoration-none">文章归档</a></li>
                     {% if nav_categories %}
                         {% for category in nav_categories|slice:":5" %}
                         <li>
-                            <a href="{% url 'blog:category_detail' category.slug %}" 
+                            <a href="{% url 'category_detail' category.slug %}" 
                                class="text-light text-decoration-none">{{ category.name }}</a>
                         </li>
                         {% endfor %}
