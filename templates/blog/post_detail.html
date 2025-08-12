@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}{{ post.title }} - {{ site_settings.site_name }}{% endblock %}
+{% block description %}{{ post.excerpt|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<article class="card">
+    <div class="card-body">
+        <!-- Post Header -->
+        <header class="mb-4">
+            <h1 class="card-title">{{ post.title }}</h1>
+            <div class="text-muted mb-3">
+                <span class="me-3">
+                    <i class="fas fa-user me-1"></i>{{ post.author.username }}
+                </span>
+                <span class="me-3">
+                    <i class="fas fa-calendar me-1"></i>{{ post.published_at|date:"Y年m月d日 H:i" }}
+                </span>
+                {% if post.category %}
+                <span class="me-3">
+                    <i class="fas fa-folder me-1"></i>
+                    <a href="{% url 'blog:category_detail' post.category.slug %}" 
+                       class="text-decoration-none">{{ post.category.name }}</a>
+                </span>
+                {% endif %}
+                <span>
+                    <i class="fas fa-eye me-1"></i>{{ post.views }} 次阅读
+                </span>
+            </div>
+            
+            {% if post.tags.all %}
+            <div class="mb-3">
+                {% for tag in post.tags.all %}
+                <a href="{% url 'blog:tag_detail' tag.slug %}" 
+                   class="badge text-decoration-none me-1" 
+                   style="background-color: {{ tag.color }};">
+                    <i class="fas fa-tag me-1"></i>{{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </header>
+        
+        <!-- Cover Image -->
+        {% if post.cover_image %}
+        <div class="mb-4">
+            <img src="{{ post.cover_image }}" class="img-fluid rounded" alt="{{ post.title }}">
+        </div>
+        {% endif %}
+        
+        <!-- Post Content -->
+        <div class="post-content">
+            {{ post.content|linebreaks }}
+        </div>
+        
+        <!-- Post Navigation -->
+        <div class="row mt-5 pt-4 border-top">
+            <div class="col-md-6">
+                {% if previous_post %}
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-chevron-left me-2"></i>
+                    <div>
+                        <small class="text-muted">上一篇</small><br>
+                        <a href="{% url 'blog:post_detail' previous_post.slug %}" 
+                           class="text-decoration-none">{{ previous_post.title|truncatechars:30 }}</a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 text-md-end">
+                {% if next_post %}
+                <div class="d-flex align-items-center justify-content-md-end">
+                    <div class="text-md-end">
+                        <small class="text-muted">下一篇</small><br>
+                        <a href="{% url 'blog:post_detail' next_post.slug %}" 
+                           class="text-decoration-none">{{ next_post.title|truncatechars:30 }}</a>
+                    </div>
+                    <i class="fas fa-chevron-right ms-2"></i>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>
+
+<!-- Related Posts -->
+{% if related_posts %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-link me-2"></i>相关文章
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for related_post in related_posts %}
+            <div class="col-md-6 mb-3">
+                <div class="d-flex">
+                    {% if related_post.cover_image %}
+                    <img src="{{ related_post.cover_image }}" 
+                         class="img-thumbnail me-3" 
+                         style="width: 80px; height: 60px; object-fit: cover;">
+                    {% endif %}
+                    <div>
+                        <h6>
+                            <a href="{% url 'blog:post_detail' related_post.slug %}" 
+                               class="text-decoration-none">{{ related_post.title|truncatechars:40 }}</a>
+                        </h6>
+                        <small class="text-muted">{{ related_post.published_at|date:"m-d" }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Comments Section -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="card-title mb-0">
+            <i class="fas fa-comments me-2"></i>评论 ({{ comments.count }})
+        </h5>
+    </div>
+    <div class="card-body">
+        <!-- Comment Form -->
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'blog:add_comment' post.slug %}" class="mb-4">
+            {% csrf_token %}
+            {{ comment_form|crispy }}
+        </form>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            请 <a href="{% url 'accounts:login' %}">登录</a> 后发表评论。
+        </div>
+        {% endif %}
+        
+        <!-- Comments List -->
+        {% for comment in comments %}
+        <div class="comment mb-4 {% if forloop.last %}border-bottom-0{% else %}border-bottom pb-3{% endif %}">
+            <div class="d-flex">
+                <div class="flex-shrink-0">
+                    {% if comment.user.profile.avatar %}
+                    <img src="{{ comment.user.profile.avatar }}" class="rounded-circle" 
+                         width="50" height="50" alt="{{ comment.get_commenter_name }}">
+                    {% else %}
+                    <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center" 
+                         style="width: 50px; height: 50px;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h6 class="mb-1">{{ comment.get_commenter_name }}</h6>
+                        <small class="text-muted">{{ comment.created_at|date:"Y-m-d H:i" }}</small>
+                    </div>
+                    <p class="mb-2">{{ comment.content|linebreaks }}</p>
+                    
+                    <!-- Replies -->
+                    {% if comment.replies.all %}
+                    <div class="replies ms-4 mt-3">
+                        {% for reply in comment.replies.all %}
+                        <div class="reply mb-3 border-start border-primary ps-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    {% if reply.user.profile.avatar %}
+                                    <img src="{{ reply.user.profile.avatar }}" class="rounded-circle" 
+                                         width="40" height="40" alt="{{ reply.get_commenter_name }}">
+                                    {% else %}
+                                    <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" 
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-grow-1 ms-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h6 class="mb-1 small">{{ reply.get_commenter_name }}</h6>
+                                        <small class="text-muted">{{ reply.created_at|date:"m-d H:i" }}</small>
+                                    </div>
+                                    <p class="mb-0 small">{{ reply.content|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="text-center text-muted">
+            <i class="fas fa-comment-slash me-2"></i>暂无评论，快来抢沙发吧！
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

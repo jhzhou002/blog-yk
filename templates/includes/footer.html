@@ -1,0 +1,82 @@
+{% load static %}
+<footer class="bg-dark text-light py-4 mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h5>{{ site_settings.site_name }}</h5>
+                <p class="text-muted">{{ site_settings.site_description }}</p>
+                {% if site_settings.footer_text %}
+                    <p class="small">{{ site_settings.footer_text|linebreaks }}</p>
+                {% endif %}
+            </div>
+            <div class="col-lg-3">
+                <h6>快速链接</h6>
+                <ul class="list-unstyled">
+                    <li><a href="{% url 'blog:home' %}" class="text-light text-decoration-none">首页</a></li>
+                    <li><a href="{% url 'blog:archive' %}" class="text-light text-decoration-none">文章归档</a></li>
+                    {% if nav_categories %}
+                        {% for category in nav_categories|slice:":5" %}
+                        <li>
+                            <a href="{% url 'blog:category_detail' category.slug %}" 
+                               class="text-light text-decoration-none">{{ category.name }}</a>
+                        </li>
+                        {% endfor %}
+                    {% endif %}
+                </ul>
+            </div>
+            <div class="col-lg-3">
+                <h6>社交媒体</h6>
+                <div class="d-flex gap-3">
+                    {% if site_settings.github_url %}
+                    <a href="{{ site_settings.github_url }}" class="text-light" target="_blank">
+                        <i class="fab fa-github fa-lg"></i>
+                    </a>
+                    {% endif %}
+                    {% if site_settings.weibo_url %}
+                    <a href="{{ site_settings.weibo_url }}" class="text-light" target="_blank">
+                        <i class="fab fa-weibo fa-lg"></i>
+                    </a>
+                    {% endif %}
+                    {% if site_settings.wechat_qr %}
+                    <a href="#" class="text-light" data-bs-toggle="modal" data-bs-target="#wechatModal">
+                        <i class="fab fa-weixin fa-lg"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <hr class="my-4">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <p class="small mb-0">
+                    &copy; {{ "now"|date:"Y" }} {{ site_settings.site_name }}. 
+                    {% if site_settings.site_author %}
+                        由 {{ site_settings.site_author }} 维护
+                    {% endif %}
+                </p>
+            </div>
+            <div class="col-lg-6 text-lg-end">
+                <p class="small mb-0">
+                    Powered by Django & Bootstrap
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- WeChat QR Code Modal -->
+{% if site_settings.wechat_qr %}
+<div class="modal fade" id="wechatModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">微信扫码关注</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img src="{{ site_settings.wechat_qr }}" class="img-fluid" alt="微信二维码">
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
