@@ -4,6 +4,54 @@
 {% block title %}首页 - {{ site_settings.site_name }}{% endblock %}
 
 {% block content %}
+<!-- Database Error Message -->
+{% if db_error %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="alert alert-warning text-center">
+            <h4><i class="fas fa-exclamation-triangle me-2"></i>数据库未初始化</h4>
+            <p class="mb-3">{{ error_message }}</p>
+            <div class="alert alert-info">
+                <h6>请按以下步骤初始化数据库：</h6>
+                <ol class="text-start mb-0">
+                    <li>在项目根目录运行：<code>python manage.py makemigrations blog_app</code></li>
+                    <li>运行数据库迁移：<code>python manage.py migrate</code></li>
+                    <li>创建超级用户：<code>python manage.py createsuperuser</code></li>
+                    <li>刷新页面查看效果</li>
+                </ol>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-info-circle me-2"></i>项目信息
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6>技术栈：</h6>
+                <ul>
+                    <li><strong>后端</strong>: Django 4.2.7</li>
+                    <li><strong>前端</strong>: Bootstrap 5</li>
+                    <li><strong>数据库</strong>: MySQL</li>
+                    <li><strong>对象存储</strong>: 七牛云</li>
+                </ul>
+                
+                <h6 class="mt-3">功能特性：</h6>
+                <ul class="mb-0">
+                    <li>响应式博客系统</li>
+                    <li>用户认证和个人资料管理</li>
+                    <li>文章分类和标签系统</li>
+                    <li>评论系统</li>
+                    <li>全文搜索功能</li>
+                    <li>管理后台</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+
 <!-- Featured Posts Carousel -->
 {% if featured_posts %}
 <div id="featuredCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
@@ -149,5 +197,6 @@
         {% endif %}
     </ul>
 </nav>
+{% endif %}
 {% endif %}
 {% endblock %}

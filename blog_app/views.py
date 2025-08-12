@@ -21,26 +21,39 @@ import json
 
 def home(request):
     """首页视图"""
-    posts = Post.objects.filter(status='published').select_related('author', 'category').prefetch_related('tags')
-    
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-    
-    featured_posts = Post.objects.filter(status='published', is_featured=True)[:5]
-    popular_posts = Post.objects.filter(status='published').order_by('-views')[:5]
-    latest_posts = Post.objects.filter(status='published').order_by('-published_at')[:5]
-    categories = Category.objects.all()
-    tags = Tag.objects.all()[:20]
-    
-    context = {
-        'page_obj': page_obj,
-        'featured_posts': featured_posts,
-        'popular_posts': popular_posts,
-        'latest_posts': latest_posts,
-        'categories': categories,
-        'tags': tags,
-    }
+    try:
+        posts = Post.objects.filter(status='published').select_related('author', 'category').prefetch_related('tags')
+        
+        paginator = Paginator(posts, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        
+        featured_posts = Post.objects.filter(status='published', is_featured=True)[:5]
+        popular_posts = Post.objects.filter(status='published').order_by('-views')[:5]
+        latest_posts = Post.objects.filter(status='published').order_by('-published_at')[:5]
+        categories = Category.objects.all()
+        tags = Tag.objects.all()[:20]
+        
+        context = {
+            'page_obj': page_obj,
+            'featured_posts': featured_posts,
+            'popular_posts': popular_posts,
+            'latest_posts': latest_posts,
+            'categories': categories,
+            'tags': tags,
+        }
+    except Exception as e:
+        # 如果数据库表不存在，显示安装页面
+        context = {
+            'page_obj': None,
+            'featured_posts': [],
+            'popular_posts': [],
+            'latest_posts': [],
+            'categories': [],
+            'tags': [],
+            'db_error': True,
+            'error_message': '数据库表尚未创建，请先运行数据库迁移命令。'
+        }
     return render(request, 'blog/home.html', context)
 
 
